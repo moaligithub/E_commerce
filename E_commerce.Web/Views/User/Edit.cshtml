@@ -1,0 +1,57 @@
+﻿@model UserEditViewModel
+
+@{
+    ViewData["Title"] = "Profile Edit";
+}
+<div class="container">
+    <h1 class="mb-3 w-100">Profile Edit</h1>
+    <a class="btn btn-secondary mr-2 mb-3" href="/Identity/Account/Manage/Email">Change Email</a>
+    <a class="btn btn-secondary mb-3" href="/Identity/Account/Manage/ChangePassword">Change Password</a>
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div class="row">
+            <input type="hidden" asp-for="UserName" />
+            <div class="form-group col-md-6">
+                <label asp-for="FirstName"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="LastName"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" disabled />
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="CountryId">Country*</label>
+                <select asp-for="CountryId" id="country" class="form-control"></select>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="CityId">City*</label>
+                <select asp-for="CityId" id="city" class="form-control"></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <input type="submit" class="btn btn-info w-100" value="Save" />
+            </div>
+            <div class="form-group col-md-6">
+                <a asp-action="Index" asp-controller="Home" class="btn btn-danger w-100">Cancel</a>
+            </div>
+        </div>
+    </form>
+    <input type="hidden" asp-for="CountryId" id="countryid" />
+    <input type="hidden" asp-for="CityId" id="cityid" />
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="ScriptsPartial/_Edit" />
+}

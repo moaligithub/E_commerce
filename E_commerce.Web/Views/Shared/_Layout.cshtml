@@ -1,0 +1,51 @@
+﻿@inject SignInManager<ApplicationUser> signInManager
+@inject UserManager<ApplicationUser> userManager
+@inject IUserServices userServices 
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>@ViewData["Title"]</title>
+        <!-- Required meta tags -->
+        @if (signInManager.IsSignedIn(User) &&
+            userServices.IsAdminAsync(userManager.GetUserAsync(User).Result.Id).Result)
+        {
+            <partial name="_SystemHeadPartial" />
+        }
+        else
+        {
+            <partial name="_SiteHeadPartial" />
+        }
+    </head>
+    <body>
+        @if (signInManager.IsSignedIn(User) &&
+       userServices.IsAdminAsync(userManager.GetUserAsync(User).Result.Id).Result)
+        {
+            <div class="container-scroller">
+                <partial name="_SystemBodyHeaderPartial" />
+                <div class="container-fluid page-body-wrapper">
+                    <div class="main-panel">
+                        <div class="content-wrapper" style="margin-top:-70px">
+                            @RenderBody()
+                        </div>
+                        <partial name="_SystemBodyFooterPartial" />
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <partial name="_SiteBodyHeaderPartial" />
+            <main role="main" class="p-5">
+                @RenderBody()
+            </main>
+            <partial name="_SiteBodyFooterPartial" />
+        }
+
+        <script src="~/lib/bootbox.js/bootbox.js"></script>
+
+        @await RenderSectionAsync("Scripts", required: false)
+        @await Component.InvokeAsync("NToastNotify")
+    </body>
+</html>

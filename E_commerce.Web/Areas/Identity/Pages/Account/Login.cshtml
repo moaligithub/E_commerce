@@ -1,0 +1,50 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+
+<div class="col-sm-12 col-md-12 col-xs-12 col-lg-6" style="margin-left:auto;margin-right:auto">
+    <form method="post">
+        <div class="login-form">
+            <h4 class="login-title">Log in</h4>
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" placeholder="Email Address">
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="col-12 mb--20">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" placeholder="Password">
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="col-md-8">
+                    <div class="check-box">
+                        <input asp-for="Input.RememberMe">
+                        <label asp-for="Input.RememberMe"></label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="forgotton-password_info">
+                        <a asp-page="./ForgotPassword">Forgot your password?</a>
+                    </div>
+                    <div class="forgotton-password_info">
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                    </div>
+                    <div class="forgotton-password_info">
+                        <a asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button class="uren-login_btn">Login</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

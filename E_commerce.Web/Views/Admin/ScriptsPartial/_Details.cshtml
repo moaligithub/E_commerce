@@ -1,0 +1,565 @@
+﻿<script>
+    $(document).ready(function () {
+        GetMonths();
+        GetDays();
+    });
+
+    $(".filt").change(function () {
+        $("#fi").prop('disabled', false);
+    });
+    $("#fi").click(function () {
+        var Year = $("#year").val();
+        var Month = $("#month").val();
+        var Day = $("#day").val();
+        var Email = $("#emailAdmin").val();
+        $.ajax({
+            url: "/api/Admin/GetActivity",
+            type: "GET",
+            dataType: "json",
+            data: { email: Email, year: Year, month: Month, day: Day },
+            success: function (data) {
+                $("table tbody").empty();
+                $("#modal").empty();
+                console.log(data);
+                for (var i = 0; i < data.length; i++) {
+                    var tr = `<tr>
+                                <td> ${data[i].typeActive} </td>
+                                <td>  ${data[i].dateTime} </td>
+                                <td> <button type="button" class="btn btn-inverse-info" data-toggle="modal" data-target="#cef${i}">Details Active</button> </td>
+                            </tr >`;
+
+                    var modal = `<div class="modal fade" id="cef${i}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Active Details</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h3 style="color: #00483d; font-family: 'Times New Roman', serif">Active Type : <span style="color: #986700; font-family: 'Times New Roman', serif">${data[i].typeActive}</span></h3>
+                                        <h3 style="color: #00483d; font-family: 'Times New Roman', serif">Active Date : <span style="color: #986700; font-family: 'Times New Roman', serif">${data[i].dateTime}</span></h3>
+                                        <h3 style="color: #00483d; font-family: 'Times New Roman', serif">Active Details : <span style="color: #986700; font-family: 'Times New Roman', serif">${data[i].details}</span></h3>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+
+                    $("#myTable tbody").append(tr);
+                    $("#modal").append(modal);
+                };
+            },
+            error: function () {
+                alert("Error");
+            }
+        });
+    });
+
+    $("#year").change(function () {
+
+        GetMonths();
+        GetDays();
+
+        $("#fi").prop('disabled', false);
+    });
+
+    $("#month").change(function () {
+        GetDays();
+        $("#fi").prop('disabled', false);
+    });
+
+    function GetMonths() {
+        $.ajax({
+            url: "/api/Date/GetMonths",
+            type: "get",
+            data: { year: $("#year").val() },
+            dataType: "json",
+            success: function (data) {
+                $("#month").empty();
+                $("#month").append(`<option value="0" selected>All Months</option>`);
+                for (var i = 0; i < data.length; i++) {
+                    if ($("#year").val() == @DateTime.Now.Year) {
+            if (@DateTime.Now.Month == i + 1) {
+                var append = `<option value="${i + 1}" selected>${data[i]}</option>`;
+            }
+                            else {
+                var append = `<option value="${i + 1}">${data[i]}</option>`;
+            }
+        }
+                        else {
+            var append = `<option value="${i + 1}">${data[i]}</option>`;
+        }
+        $("#month").append(append);
+    }
+                },
+    error: function () {
+        alert("error");
+    }
+            });
+        }
+
+    function GetDays() {
+        var Month = $("#month").val();
+        $.ajax({
+            url: "/api/Date/GetDays",
+            type: "get",
+            dataType: "json",
+            data: { month: Month, year: $("#year").val() },
+            success: function (data) {
+                $("#day").empty();
+                $("#day").append(`<option value="0">All Days</option>`);
+                for (var i = 0; i < data.length; i++) {
+                    if ($("#month").val() == @DateTime.Now.Month && $("#year").val() == @DateTime.Now.Year) {
+            if (data[i] == @DateTime.Now.Day) {
+                var append = `<option value="${data[i]}" selected>${data[i]}</option>`;
+            }
+                            else {
+                var append = `<option value="${data[i]}">${data[i]}</option>`;
+            }
+        }
+                        else {
+            var append = `<option value="${data[i]}">${data[i]}</option>`;
+        }
+
+        $("#day").append(append);
+    }
+                }
+            });
+        }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        var StatsAdded = [@Model.AdminActivityStats.AddedStats[0],@Model.AdminActivityStats.AddedStats[1],@Model.AdminActivityStats.AddedStats[2],@Model.AdminActivityStats.AddedStats[3],@Model.AdminActivityStats.AddedStats[4],@Model.AdminActivityStats.AddedStats[5],@Model.AdminActivityStats.AddedStats[6],@Model.AdminActivityStats.AddedStats[7],@Model.AdminActivityStats.AddedStats[8],@Model.AdminActivityStats.AddedStats[9],@Model.AdminActivityStats.AddedStats[10],@Model.AdminActivityStats.AddedStats[11]];
+        var StatsUpDated = [@Model.AdminActivityStats.UpDateStats[0],@Model.AdminActivityStats.UpDateStats[1],@Model.AdminActivityStats.UpDateStats[2],@Model.AdminActivityStats.UpDateStats[3],@Model.AdminActivityStats.UpDateStats[4],@Model.AdminActivityStats.UpDateStats[5],@Model.AdminActivityStats.UpDateStats[6],@Model.AdminActivityStats.UpDateStats[7],@Model.AdminActivityStats.UpDateStats[8],@Model.AdminActivityStats.UpDateStats[9],@Model.AdminActivityStats.UpDateStats[10],@Model.AdminActivityStats.UpDateStats[11]];
+        var StatsDeleted = [@Model.AdminActivityStats.DeleteStats[0],@Model.AdminActivityStats.DeleteStats[1],@Model.AdminActivityStats.DeleteStats[2],@Model.AdminActivityStats.DeleteStats[3],@Model.AdminActivityStats.DeleteStats[4],@Model.AdminActivityStats.DeleteStats[5],@Model.AdminActivityStats.DeleteStats[6],@Model.AdminActivityStats.DeleteStats[7],@Model.AdminActivityStats.DeleteStats[8],@Model.AdminActivityStats.DeleteStats[9],@Model.AdminActivityStats.DeleteStats[10],@Model.AdminActivityStats.DeleteStats[11]];
+        var AllStats = [@Model.AdminActivityStats.RelativeStatsForDeleted, @Model.AdminActivityStats.RelativeStatsForAdded, @Model.AdminActivityStats.RelativeStatsForUpDated];
+
+        statsadd(StatsAdded);
+        statsupdate(StatsUpDated);
+        statsdelete(StatsDeleted);
+        statsall(AllStats);
+    });
+
+    $("#fi").click(function () {
+        $(".StatsYear").empty();
+        $(".StatsYear").append($("#year").val());
+
+        $.ajax({
+            url: "/api/Admin/GetAllStatsForAdminActivity",
+            type: "get",
+            dataType: "json",
+            data: { year: $("#year").val(), AdminId: $("#IdAdmin").val() },
+            success: function (Data) {
+                var StatsAdded = [Data.addedStats[0], Data.addedStats[1], Data.addedStats[2], Data.addedStats[3], Data.addedStats[4], Data.addedStats[5], Data.addedStats[6], Data.addedStats[7], Data.addedStats[8], Data.addedStats[9], Data.addedStats[10], Data.addedStats[11]];
+                var StatsUpDated = [Data.upDateStats[0], Data.upDateStats[1], Data.upDateStats[2], Data.upDateStats[3], Data.upDateStats[4], Data.upDateStats[5], Data.upDateStats[6], Data.upDateStats[7], Data.upDateStats[8], Data.upDateStats[9], Data.upDateStats[10], Data.upDateStats[11]];
+                var StatsDeleted = [Data.deleteStats[0], Data.deleteStats[1], Data.deleteStats[2], Data.deleteStats[3], Data.deleteStats[4], Data.deleteStats[5], Data.deleteStats[6], Data.deleteStats[7], Data.deleteStats[8], Data.deleteStats[9], Data.deleteStats[10], Data.deleteStats[11]];
+                var AllStats = [Data.relativeStatsForDeleted, Data.relativeStatsForAdded, Data.relativeStatsForUpDated];
+
+                $("#addsta").empty();
+                $("#updatesta").empty();
+                $("#deletesta").empty();
+                $("#allsta").empty();
+
+                $("#addsta").append('<canvas id="barChart" style="height:250px"></canvas>');
+                $("#updatesta").append('<canvas id="barChart2" style="height:230px"></canvas>');
+                $("#deletesta").append('<canvas id="barChart3" style="height:250px"></canvas>');
+                $("#allsta").append('<canvas id="pieChart" style="height: 250px"></canvas>');
+
+                statsadd(StatsAdded);
+                statsupdate(StatsUpDated);
+                statsdelete(StatsDeleted);
+                statsall(AllStats);
+
+                console.log(StatsAdded);
+            },
+            error: function () {
+                var StatsAdded = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                var StatsUpDated = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                var StatsDeleted = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                var AllStats = [0, 0, 0];
+
+                $("#addsta").empty();
+                $("#updatesta").empty();
+                $("#deletesta").empty();
+                $("#allsta").empty();
+
+                $("#addsta").append('<canvas id="barChart" style="height:250px"></canvas>');
+                $("#updatesta").append('<canvas id="barChart2" style="height:230px"></canvas>');
+                $("#deletesta").append('<canvas id="barChart3" style="height:250px"></canvas>');
+                $("#allsta").append('<canvas id="pieChart" style="height: 250px"></canvas>');
+
+                statsadd(StatsAdded);
+                statsupdate(StatsUpDated);
+                statsdelete(StatsDeleted);
+                statsall(AllStats);
+            }
+        });
+    });
+
+    // Stats For Added -------------------------------------------------------------------------------
+    function statsadd(dataFunction) {
+        var data = {
+            labels: ["January", "February", "March", "April", "May", "June", "August", "September", "October", "November", "December"],
+            datasets: [{
+                label: 'Percentage',
+                data: dataFunction,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(585, 369, 183, 0.2)',
+                    'rgba(536, 232, 765, 0.2)',
+                    'rgba(246, 876, 123, 0.2)',
+                    'rgba(467, 123, 314, 0.2)',
+                    'rgba(565, 24, 353, 0.2)',
+                    'rgba(522, 765, 54, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(585, 369, 183, 1)',
+                    'rgba(257, 232, 765, 1)',
+                    'rgba(246, 876, 456, 1)',
+                    'rgba(467, 123, 314, 1)',
+                    'rgba(565, 24, 353, 1)',
+                    'rgba(522, 765, 54, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            }]
+        };
+        var options = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    gridLines: {
+                        color: "rgba(204, 204, 204,0.1)"
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        color: "rgba(204, 204, 204,0.1)"
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            elements: {
+                point: {
+                    radius: 0
+                }
+            }
+        };
+
+        var barChartCanvas = $("#barChart").get(0).getContext("2d");
+        // This will get the first returned node in the jQuery collection.
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    }
+    // Stats For UpDated ---------------------------------------------------
+    function statsupdate(dataFunction) {
+        var data = {
+            labels: ["January", "February", "March", "April", "May", "June", "August", "September", "October", "November", "December"],
+            datasets: [{
+                label: 'Percentage',
+                data: dataFunction,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(585, 369, 183, 0.2)',
+                    'rgba(536, 232, 765, 0.2)',
+                    'rgba(246, 876, 123, 0.2)',
+                    'rgba(467, 123, 314, 0.2)',
+                    'rgba(565, 24, 353, 0.2)',
+                    'rgba(522, 765, 54, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(585, 369, 183, 1)',
+                    'rgba(257, 232, 765, 1)',
+                    'rgba(246, 876, 456, 1)',
+                    'rgba(467, 123, 314, 1)',
+                    'rgba(565, 24, 353, 1)',
+                    'rgba(522, 765, 54, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            }]
+        };
+
+        var options = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    gridLines: {
+                        color: "rgba(204, 204, 204,0.1)"
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        color: "rgba(204, 204, 204,0.1)"
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            elements: {
+                point: {
+                    radius: 0
+                }
+            }
+        };
+
+        var barChartCanvas = $("#barChart2").get(0).getContext("2d");
+        // This will get the first returned node in the jQuery collection.
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    }
+
+    // Stats For Deleted ---------------------------------------------------------
+    function statsdelete(dataFunction) {
+        var data = {
+            labels: ["January", "February", "March", "April", "May", "June", "August", "September", "October", "November", "December"],
+            datasets: [{
+                label: 'Percentage',
+                data: dataFunction,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(585, 369, 183, 0.2)',
+                    'rgba(536, 232, 765, 0.2)',
+                    'rgba(246, 876, 123, 0.2)',
+                    'rgba(467, 123, 314, 0.2)',
+                    'rgba(565, 24, 353, 0.2)',
+                    'rgba(522, 765, 54, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(585, 369, 183, 1)',
+                    'rgba(257, 232, 765, 1)',
+                    'rgba(246, 876, 456, 1)',
+                    'rgba(467, 123, 314, 1)',
+                    'rgba(565, 24, 353, 1)',
+                    'rgba(522, 765, 54, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            }]
+        };
+
+        var options = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    gridLines: {
+                        color: "rgba(204, 204, 204,0.1)"
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        color: "rgba(204, 204, 204,0.1)"
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            elements: {
+                point: {
+                    radius: 0
+                }
+            }
+        };
+
+        var barChartCanvas = $("#barChart3").get(0).getContext("2d");
+        // This will get the first returned node in the jQuery collection.
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    }
+
+    // All Stats ---------------------------------------------------------------------------------
+    function statsall(dataFunction) {
+        var doughnutPieData = {
+            datasets: [{
+                data: dataFunction,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)',
+                    'rgba(255, 159, 64, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+            }],
+
+            labels: [
+                'Delete ',
+                'Add',
+                'UpDate',
+            ]
+        };
+        var doughnutPieOptions = {
+            responsive: true,
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        };
+
+        var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
+        var pieChart = new Chart(pieChartCanvas, {
+            type: 'pie',
+            data: doughnutPieData,
+            options: doughnutPieOptions
+        });
+    }
+
+</script>
+
+<script>
+    $("#delete").click(function () {
+        bootbox.confirm({
+            message: "Are you sure you want to delete this admin?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-success'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    var Id = $("#IdAdmin").val();
+                    $.ajax({
+                        url: "/api/Admin/Delete/" + Id,
+                        type: "delete",
+                        data: { id: Id },
+                        success: function () {
+                            window.location = "/Admin/Index";
+                        }
+                    });
+                }
+            }
+        });
+    });
+    $(".Deactivate").click(function () {
+        bootbox.confirm({
+            message: "Are you sure you want to Deactivate this admin?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-success'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    var Id = $("#IdAdmin").val();
+                    $.ajax({
+                        url: "/api/Admin/Deactivate/" + Id,
+                        type: "patch",
+                        data: { id: $("#IdAdmin").val() },
+                        success: function () {
+                            $(".Deactivate").prop('hidden', true);
+                            $(".Activation").prop('hidden', false);
+                            toastr.success("Successfully Deactivate " + $("#fullname").val(), "Success");
+                        },
+                    });
+                }
+            }
+        });
+    });
+
+    $(".Activation").click(function () {
+        bootbox.confirm({
+            message: "Are you sure you want to Activation this admin?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-success'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    var Id = $("#IdAdmin").val();
+                    $.ajax({
+                        url: "/api/Admin/Activation/" + Id,
+                        type: "patch",
+                        data: { id: $("#IdAdmin").val() },
+                        success: function () {
+                            $(".Deactivate").prop('hidden', false);
+                            $(".Activation").prop('hidden', true);
+                            toastr.success("Successfully Activation " + $("#fullname").val(), "Success");
+                        },
+                    });
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,180 @@
+﻿@model AdminDetailsViewModel
+@inject IDateServices dateServices
+
+@{
+    ViewData["Title"] = "Admin Deatils";
+}
+
+<div class="row">
+    <div class="col-lg-4 stretch-card mb-4">
+        <div class="card overflow-auto" style="max-height:500px">
+            <center>
+                <div class="mt-3">
+                    @if (Model.ProfilePicture.Count() == 0)
+                    {
+                        <img src="~/Systemassets/images/Screenshot 2022-06-17 195427.png" style="max-width: 150px; max-height: 150px; border-radius: 50%" />
+                    }
+                    else
+                    {
+                        <img src="data:image/*;base64,@Convert.ToBase64String(Model.ProfilePicture)" style="max-width: 150px; max-height: 150px; border-radius: 50%" />
+                    }
+                </div>
+            </center>
+            <div class="mt-3 ml-3">
+                <h4 style="color: #986700; font-family: 'Times New Roman', serif"><span class="mt-4" style="color: #00483d;font-family: 'Times New Roman', serif">Full Name /</span> @Model.FullName</h4>
+                <h4 style="color: #986700; font-family: 'Times New Roman', serif"><span class="mt-4" style="color: #00483d; font-family: 'Times New Roman', serif">User Name /</span> @Model.UserName</h4>
+                <h4 style="color: #986700; font-family: 'Times New Roman', serif"><span class="mt-4" style="color: #00483d; font-family: 'Times New Roman', serif">Email /</span> @Model.Email</h4>
+                <h4 style="color: #986700; font-family: 'Times New Roman', serif"><span class="mt-4" style="color: #00483d; font-family: 'Times New Roman', serif">Country /</span> @Model.Country</h4>
+                <h4 style="color: #986700; font-family: 'Times New Roman', serif"><span class="mt-4" style="color: #00483d; font-family: 'Times New Roman', serif">City /</span> @Model.City</h4>
+                <h4 style="color: #986700; font-family: 'Times New Roman', serif"><span class="mt-4" style="color: #00483d; font-family: 'Times New Roman', serif">Branch /</span> @Model.Branch</h4>
+                <input type="hidden" value="@Model.Email" id="emailAdmin" />
+                <input type="hidden" value="@Model.Id" id="IdAdmin" />
+                @if (Model.PhoneNumber == null)
+                {
+                    <h4 style="color: #986700; font-family: 'Times New Roman', serif"><span class="mt-4" style="color: #00483d; font-family: 'Times New Roman', serif">Phone Number /</span> No Phone Number</h4>
+                }
+                else
+                {
+                    <h4 style="color: #986700; font-family: 'Times New Roman', serif"><span class="mt-4" style="color: #00483d; font-family: 'Times New Roman', serif">Phone Number /</span> @Model.PhoneNumber </h4>
+                }
+            </div>
+            <center>
+                <div class="mt-3 mb-3">
+                    <button class="btn btn-inverse-danger m-2" asp-action="Delete" id="delete">Delete</button>
+                    <a class="btn btn-inverse-info m-2" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                    @if (Model.IsActive)
+                    {
+                        <button class="btn btn-inverse-warning m-2 Deactivate">Deactivate</button>
+                        <button class="btn btn-inverse-success m-2 Activation" hidden>Activation</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-inverse-warning m-2 Deactivate" hidden>Deactivate</button>
+                        <button class="btn btn-inverse-success m-2 Activation">Activation</button>
+                    }
+
+                </div>
+            </center>
+        </div>
+    </div>
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card overflow-auto" style="max-height:500px">
+            <div class="card-body">
+                @{ List<int> Years = dateServices.GetLast10Years(); }
+                <select class="col-lg-2 form-control mb-3 d-inline-block mr-2 filt" id="year">
+                    @foreach (var Year in Years)
+                    {
+                        <option value="@Year">@Year</option>
+                    }
+                </select>
+                <select class="col-lg-2 form-control mb-3 d-inline-block mr-2 filt" id="month">
+                    <option value="@DateTime.Now.Month">@dateServices.GetMonthName(DateTime.Now.Month)</option>
+                </select>
+                <select class="col-lg-2 form-control mb-3 d-inline-block filt" id="day">
+                    <option value="0" selected>All Days</option>
+                </select>
+                <div class="m-2" style="float:right">
+                    <i class="mdi mdi-broom"></i>
+                    <button class="btn btn-inverse-success" id="fi" disabled>Filter</button>
+                </div>
+                <table class="table table-dark" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>Active Type</th>
+                            <th>Active Date</th>
+                            <th>Active Details</th>
+                        </tr>
+                    </thead>
+                    <tbody class="mb-3">
+                        @for (int i = 0; i < Model.AdminActivities.Count; i++)
+                        {
+                            <tr>
+                                <td>@Model.AdminActivities[i].TypeActive</td>
+                                <td>@Model.AdminActivities[i].DateTime</td>
+                                @{ string vvv = "cef" + i.ToString(); }
+                                <td>
+                                    <button type="button" class="btn btn-inverse-info" data-toggle="modal" data-target="#@vvv">Details Active</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div id="modal">
+                    @for (int i = 0; i < Model.AdminActivities.Count(); i++)
+                    {
+                        <div>
+                            @{ string vvv = "cef" + i.ToString(); }
+                        </div>
+
+                        <div class="modal fade" id="@vvv" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Active Details</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h3 style="color: #00483d; font-family: 'Times New Roman', serif">Active Type : <span style="color: #986700; font-family: 'Times New Roman', serif">@Model.AdminActivities[i].TypeActive</span></h3>
+                                        <h3 style="color: #00483d; font-family: 'Times New Roman', serif">Active Date : <span style="color: #986700; font-family: 'Times New Roman', serif">@Model.AdminActivities[i].DateTime</span></h3>
+                                        <h3 style="color: #00483d; font-family: 'Times New Roman', serif">Active Details : <span style="color: #986700; font-family: 'Times New Roman', serif">@Model.AdminActivities[i].Details</span></h3>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Add Products In <span class="StatsYear">@DateTime.Now.Year</span></h4>
+                <div id="addsta">
+                    <canvas id="barChart" style="height:250px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">UpDate Products In <span class="StatsYear">@DateTime.Now.Year</span></h4>
+                <div id="updatesta">
+                    <canvas id="barChart2" style="height:230px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Delete Stats In <span class="StatsYear">@DateTime.Now.Year</span></h4>
+                <div id="deletesta">
+                    <canvas id="barChart3" style="height:250px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Activity Stats In <span class="StatsYear">@DateTime.Now.Year</span></h4>
+                <div id="allsta">
+                    <canvas id="pieChart" style="height:250px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="fullname" value="@Model.FullName"/>
+
+@section Scripts {
+    <partial name="ScriptsPartial/_Details" />
+}

@@ -1,0 +1,124 @@
+﻿@model CreateAdminViewModel
+
+@{
+    ViewData["Title"] = "Add Admin";
+}
+
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Add New Admin</h4>
+                <form class="forms-sample" asp-action="Create" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label asp-for="FirstName"></label>
+                        <input asp-for="FirstName" class="form-control" id="Element1" style="background-color:rgb(169 169 169 / 0.08);color:white" placeholder="FirstName">
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" id="Element2" class="form-control" style="background-color: rgb(169 169 169 / 0.08); color: white" placeholder="LastName">
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" id="Element3" class="form-control" style="background-color: rgb(169 169 169 / 0.08); color: white" placeholder="Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" class="form-control" style="background-color: rgb(169 169 169 / 0.08); color: white" placeholder="Password">
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" style="background-color: rgb(169 169 169 / 0.08); color: white" placeholder="ConfirmPassword">
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Country*</label>
+                        <select id="Element4" class="form-control country" style="background-color: rgb(169 169 169 / 0.08);color:white">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CityId"></label>
+                        <select asp-for="CityId" id="Element5" required class="form-control city" style="background-color: rgb(169 169 169 / 0.08); color: white" disabled>
+                        </select>
+                        <span asp-validation-for="CityId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber"></label>
+                        <input asp-for="PhoneNumber" id="Element7" class="form-control" style="background-color: rgb(169 169 169 / 0.08); color: white" placeholder="PhoneNumber">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <a class="btn btn-inverse-info w-100" data-toggle="modal" data-target="#BranchModel">Add This Admin To Branch</a>
+                    </div>
+                    <div class="form-group">
+                        <label>File upload</label>
+                        <input type="file" asp-for="File" accept="image/*" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                            <span class="input-group-append">
+                                <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="BranchModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Active Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>Country*</label>
+                                        <select id="Country" class="form-control" style="background-color: rgb(169 169 169 / 0.08);color:white">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Branch*</label>
+                                        <select asp-for="BranchId" id="Element6" class="form-control branch" disabled style="background-color: rgb(169 169 169 / 0.08);color:white">
+                                        </select>
+                                        <span asp-validation-for="BranchId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2">Add Admin</button>
+                    <a class="btn btn-danger" asp-action="Index">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body" style="">
+                <center>
+                    <img src="~/Systemassets/images/Screenshot 2022-06-17 195427.png" id="image" style="width:200px;border-radius:50%">
+                </center>
+                <br /><br />
+                <h3 style="color:#00483d">First Name : <span id="firstname" style="color:#986700"></span></h3> <br />
+                <h3 style="color:#00483d">Last Name : <span id="lastname" style="color:#986700"></span></h3> <br />
+                <h3 style="color:#00483d">Email Name : <span id="email" style="color:#986700"></span></h3> <br />
+                <h3 style="color:#00483d">Country : <span id="country" style="color:#986700"></span></h3> <br />
+                <h3 style="color:#00483d">City : <span id="city" style="color:#986700"></span></h3> <br />
+                <h3 style="color:#00483d">Branch : <span id="branch" style="color:#986700"></span></h3> <br />
+                <h3 style="color:#00483d">Phone Number : <span id="phonenumber" style="color:#986700"></span></h3> <br />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="ScriptsPartial/_Create" />
+    <script src="~/Systemassets/js/file-upload.js"></script>
+}

@@ -1,0 +1,60 @@
+﻿<script>
+    $(document).ready(function () {
+        // Get Countries
+        $.ajax({
+            url: "/api/Countries",
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                $("#country").empty();
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].value == $("#countryid").val()) {
+                        $("#country").append(`<option selected value="${data[i].value}">${data[i].text}</option>`)
+                    }
+                    else {
+                        $("#country").append(`<option value="${data[i].value}">${data[i].text}</option>`)
+                    }
+                }
+            }
+        });
+
+        // Get Cities
+        $.ajax({
+            url: "/api/Cities",
+            type: "get",
+            data: { CountryId: $("#countryid").val() },
+            dataType: "json",
+            success: function (data) {
+                $("#city").empty();
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].value == $("cityid").val()) {
+                        $("#city").append(`<option selected value="${data[i].value}">${data[i].text}</option>`);
+                    }
+                    else {
+                        $("#city").append(`<option value="${data[i].value}">${data[i].text}</option>`);
+                    }
+                }
+            }
+        });
+    });
+
+    $("#country").change(function () {
+        $.ajax({
+            url: "/api/Cities",
+            type: "get",
+            data: { CountryId: $("#country").val() },
+            dataType: "json",
+            success: function (data) {
+                $("#city").empty();
+                $("#city").append(`<option value="" selected>Select City...</option>`);
+                for (var i = 0; i < data.length; i++) {
+                    $("#city").append(`<option value="${data[i].value}">${data[i].text}</option>`);
+                }
+            }
+        });
+
+        $("#city").change(function () {
+            $("#city option[value='']").remove();
+        });
+    });
+</script>

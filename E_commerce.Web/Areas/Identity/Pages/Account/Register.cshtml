@@ -1,0 +1,109 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="col-sm-12 col-md-12 col-lg-6 col-xs-12" style="margin-left:auto;margin-right:auto">
+    <form method="post">
+        <div class="login-form">
+            <h4 class="login-title">Register</h4>
+            <div class="row">
+                <div class="col-md-6 col-12 mb--20">
+                    <label asp-for="Input.FirstName"></label>
+                    <input asp-for="Input.FirstName" placeholder="First Name">
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 col-12 mb--20">
+                    <label asp-for="Input.LastName"></label>
+                    <input asp-for="Input.LastName" placeholder="Last Name">
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Input.CountryId"></label>
+                    <select class="form-control country" asp-for="Input.CountryId"></select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>City*</label>
+                    <select class="form-control city" asp-for="Input.CityId" disabled>
+                        <option>Select City...</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" placeholder="Email Address or username">
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    <span cite class="text-danger">@Html.ValidationMessage("Email")</span>
+                </div>
+                <div class="col-md-12">
+                    <label asp-for="Input.PhoneNumber"></label>
+                    <input asp-for="Input.PhoneNumber" placeholder="PhoneNumber">
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" placeholder="Password">
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    <input asp-for="Input.ConfirmPassword" placeholder="Confirm Password">
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <div class="forgotton-password_info">
+                        <a asp-page="./Login">You already have an account?</a>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button class="uren-register_btn">Register</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            let Countries = '<option value="">Select Country...</option>';
+            $.ajax({
+                url: "/api/Countries",
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (i, country) {
+                        Countries += '<option value="' + country.value + '">' + country.text + "</option>";
+                    });
+                    $(".country").empty();
+                    $(".country").html(Countries);
+                }
+            })
+        })
+        $(".country").change(function () {
+            if ($(".country option:selected").val() != "") {
+                $(".country option[value='']").remove();
+                $(".city").prop('disabled', false);
+                let id = $(".country option:selected").val();
+                $.ajax({
+                    url: "/api/Cities",
+                    type: "GET",
+                    dataType: "json",
+                    data: { CountryId: id },
+                    success: function (data) {
+                        let items = '<option value="">Select City...</option>';
+                        $.each(data, function (i, city) {
+                            items += '<option value="' + city.value + '">' + city.text + "</option>";
+                        });
+                        $(".city").empty();
+                        $(".city").html(items);
+                    }
+                })
+                $(".city").change(function () {
+                    $(".city option[value='']").remove();
+                })
+            }
+        })
+    </script>
+}
